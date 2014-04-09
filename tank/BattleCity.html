@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>New Game</title>
+		<link rel="stylesheet" type="text/css" href="bootstrap.css">
+		<style>
+		  .p{
+		    width:640px;
+		    height:480px;
+		  }
+		  .p1{
+		    background-image: url(slun.jpg);
+		  }
+		  .p2{
+		    background-image: url(slun_dunk_qingzi_rukawa.jpg);
+		  }
+		</style>
+	</head>
+	<body>
+		<div class="container">
+	    <div class="warp">
+	      <span class="con"></span><span class="cursor"><strong>|</strong></span>
+	    </div>
+	    <div class="p">
+	      
+	    </div>
+		</div>
+		<script src="jquery.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+		  var w = '2007年10月28日 - 这里就有两个严重的问题，第一个问题是，如何才能区别Unicode和ASCII？计算机怎么知道三个字节表示一个符号，而不是分别表示三个符号呢？'
+		    , s = '|'
+		    , timer
+		    , timer2
+		    , timer3
+		    , a = w.split('')
+		    , func = function(){
+		      if(a.length > 0){
+		        $('.con').append(a.shift());
+		        //timer = setTimeout(func(), 1000);
+		      } else {
+		        clearInterval(timer);
+		      }
+		    }
+		    , func2 = function(){
+		      $('.cursor').toggle();
+		    }
+		    , func3 = function(){
+		      if($('.p').is('.p1')){
+		        $('.p').removeClass('p1');
+		        $('.p').addClass('p2');
+		      }else if($('.p').is('.p2')){
+		        $('.p').removeClass('p2');
+		        $('.p').addClass('p1');
+		      }else{
+		        $('.p').addClass('p1');
+		      }
+		    };
+		 
+		  timer = setInterval(func, 300);
+		  timer2 = setInterval(func2, 200);
+		  //timer3 = setInterval(func3, 30);
+		</script>
+	</body>
+</html>

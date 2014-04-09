@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Battle City</title>
+		<link rel="stylesheet" type="text/css" href="bootstrap.css">
+		<style>
+		  .warp{
+		    width:1000px;
+		    height:600px;
+		    background:#B3D4FC;
+		    border-left:1px solid #0769AD;
+		    border-top:1px solid #0769AD;
+		    margin-top:30px;
+		  }
+		  .cells{
+		    width:9px;
+		    height:9px;
+		    border-right:1px solid #0769AD;
+		    border-bottom:1px solid #0769AD;
+		    float:left;
+		  }
+		</style>
+	</head>
+	<body>
+		<div class="container">
+	    <div class="warp">
+	      
+	    </div>
+		</div>
+		<script src="jquery.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+		(function(){
+		  var position = function(x, y){                                             //position coordinator.
+  		    this.x = x; //cells
+  		    this.y = y; //cells
+  		};
+		  var Game = function(opts){
+		    this.options = opts;
+		    this.init(opts);
+		    this.start();
+		  };
+		  Game.defaultSet = {
+		      maxLen : 100                                                          //100 cells a line:width
+    		, maxHei : 60                                                           //60 lines:height
+    		, cells : 'cells'                                                       //the class of the cells
+    		, x : 3                                                                 //
+    		, y : 3
+    		, l : 1
+    		, r : 1
+    		, MOVED : 1
+    		, UNMOVE : 0
+    		, DEFAULT_COLOR : '#B3D4FC'
+    		, OBJECT_COLOR : 'black'
+		  };
+		  Game.defaultOptions = {                                                  //default settings of object(bullet, tank)
+		      w : 1                                                                // the width
+		    , h : 1                                                                // the height
+		    , speed : 1                                                            // the speed
+		    , life : 1                                                             // when life <=0, it dead.
+		    , position : new position(1, 1)                                        // the position
+		    , color : Game.defaultSet.OBJECT_COLOR                                 // the color
+		    , face : 0   
+		    , isMoved : Game.defaultSet.UNMOVE                                     // is moved already or not.
+		  };
+		  Game.defaultTankOptions = {        //default settings of tank
+  		    w : 3                          //width of the tank.
+  		  , h : 3                          //height of the tank.
+  		  , bulletSpeed : 1                //the speed of the bullet.
+  		  , life : 3                       //when life <=0, it dies.
+  		  , position : new position(2, 2)  //position of the tank.
+  		};
+  		Game.defaultBulletOptions = {      //default settings of bullet
+  		       
+  		};
+		  Game.prototype.init = function(opts){
+		    var $t = this
+		      , initLayout = function(t){    //draw background.
+  		      for(var i = 0; i < Game.defaultSet.maxLen * Game.defaultSet.maxHei; i++){
+  		        $(t).append('<div class="'+Game.defaultSet.cells +'"></div>')
+  		      }
+		      }
+		      , gameSettings = function(p){
+		        // do some settings about game here.
+		        // mainly to set some parameters.
+		        $t.setOpts(p);
+		      };
+  		    
+  		  initLayout(opts.layout);
+  		  
+  		  gameSettings(opts);
+		  };
+		  Game.prototype.setOpts = function(opts){
+		    // do something here.
+		    this.opts = opts;
+		  }
+		  Game.prototype.start = function(){
+		    var player
+		    , n = 10
+		    , bulletArr = []
+  		  , tankArr   = []
+		    , tank = function(p){                         //tank.  
+		      var opts = $.extend({}, Game.defaultOptions, Game.defaultTankOptions, p);
+		      this.w = opts.w;
+  		    this.h = opts.h;
+  		    this.bulletSpeed = opts.bulletSpeed;
+  		    this.speed = opts.speed;
+  		    this.life = opts.life;
+  		    this.position = opts.position;
+  		    this.color = opts.color;
+  		    this.face = opts.face;
+  		    this.isMoved = opts.isMoved
+  		    tankArr.push(this);                           // push it into the tanks array when build one.
+		    }
+		    , creatTank = function(p){                      //creat a tank here.
+		      return new tank(p);
+		    }
+		    , bullet = function(p){                         //bullet
+  		    var opts = $.extend({}, Game.defaultOptions, Game.defaultBulletOptions, p);
+  		    this.w = opts.w;
+  		    this.h = opts.h;
+  		    this.speed = opts.speed;
+  		    this.position = opts.position;
+  		    this.color = opts.color;
+  		    this.face = opts.face;
+  		    this.life = opts.life;
+  		    this.isMoved = opts.isMoved
+  		    bulletArr.push(this);                        // push it into the bullets array when build one.
+  		  }
+  		  , creatBullet = function(p){                     //create a bullet here.
+  		    return new bullet(p);
+  		  }
+  		  , gameControl2 = function(){
+  		    $(window).off('keydown');
+  		  }
+  		  , gameControl = function(){
+  		    $(window).keydown(function(e){
+  		      switch(e.keyCode){
+  		        case 13:
+  		          player.shoot();
+  		          break;
+  		        case 83:
+  		          player.moveT();
+  		          break;
+  		        case 87:
+  		          player.moveB();
+  		          break;
+  		        case 65:
+  		          player.moveL();
+  		          break;
+  		        case 68:
+  		          player.moveR();
+  		          break;
+  		        default:
+  		          //alert(e.keyCode);
+  		          break;
+  		      }
+  		    })
+  		  }
+  		  , getCells = function(){
+  		    return $('.'+Game.defaultSet.cells);
+  		  }
+  		  , gameTimer
+  		  , erase = function(){
+  		    var cells = getCells();
+  		    $(cells).css({'background-color':Game.defaultSet.DEFAULT_COLOR});
+  		  }
+  		  , run = function(){
+  		    if(tankArr.length > 0){ 
+  		      for(var i = 0 ; i < tankArr.length; i++){
+  		        //tanks are under control.
+  		        
+  		        var t = tankArr[i];
+  		        t.isMoved = Game.defaultSet.MOVED;
+  		      }
+  		    }
+  		    if(bulletArr.length > 0){ //bullets are running auto.
+  		      for(var i = 0 ; i < bulletArr.length; i++){
+    		      var b = bulletArr[i];
+    		      if(b.life > 0){
+    		        b.isMoved = Game.defaultSet.MOVED;
+    		        switch(b.face){
+    		          case 0:
+    		            b.moveL();
+    		            break;
+    		          case 1:
+    		            b.moveB();
+    		            break;
+    		          case 2:
+    		            b.moveR();
+    		            break;
+    		          case 3:
+    		            b.moveT();
+    		            break;
+    		        }
+    		      }else{
+    		        bulletArr.splice(i, 1);
+    		      }
+    		    }
+  		    }
+  		  }
+  		  , draw = function(){
+  		    if(tankArr.length > 0){
+  		      for(var i = 0 ; i < tankArr.length; i++){
+    		      var t = tankArr[i];
+    		      if(t.life > 0){
+    		        t.isMoved = Game.defaultSet.UNMOVE;
+    		        t.render();
+    		      }else{
+    		        tankArr.splice(i, 1);
+    		      }
+    		    }
+  		    }
+  		    if(bulletArr.length > 0){
+  		      for(var i = 0 ; i < bulletArr.length; i++){
+    		      var b = bulletArr[i];
+    		      if(b.life > 0){
+    		        b.isMoved = Game.defaultSet.UNMOVE;
+    		        b.render();
+    		      }else{
+    		        bulletArr.splice(i, 1);
+    		      }
+    		    }
+    		  }
+  		  }
+  		  , gameRun = function(){
+  		    erase();
+  		    run();
+  		    draw();
+  		  }
+		    , start = function(){
+		      player = creatTank({});
+		      gameControl();
+		      gameTimer = setInterval(gameRun, 100);
+		    }
+		    , stop = function(){
+		      clearInterval(gameTimer);
+		    };
+
+		    tank.prototype.moveR = function(){
+  		    (this.position.x < Game.defaultSet.maxLen - (this.w-1)/2 - this.speed) && (this.position.x += this.speed)
+  		    this.face = 2;
+  		  };
+  		  tank.prototype.moveL = function(){
+  		    (this.position.x > (this.w-1)/2 + this.speed) && (this.position.x -= this.speed)
+  		    this.face = 0;
+  		  };
+  		  tank.prototype.moveT = function(){
+  		    (this.position.y < Game.defaultSet.maxHei - (this.h-1)/2 - this.speed) && (this.position.y += this.speed)
+  		    this.face = 3;
+  		  };
+  		  tank.prototype.moveB = function(){
+  		    (this.position.y > (this.h-1)/2 + this.speed) && (this.position.y -= this.speed)
+  		    this.face = 1;
+  		  };
+  		  tank.prototype.clean = function(){
+  		    gameControl2();
+  		    this.life = 0;
+  		  };
+  		  tank.prototype.render = function(){
+  		    this.life > 0 && this.renderingPosition();
+  		  };
+  		  tank.prototype.renderingPosition = function(){
+  		    var p = this.position, cells = getCells();
+  		    p.x < 3 && (p.x = 3);
+  		    p.x > Game.defaultSet.maxLen -2 && (p.x = Game.defaultSet.maxLen -2);
+  		    p.y < 3 && (p.y = 3);
+  		    p.y > Game.defaultSet.maxHei -2 && (p.y = Game.defaultSet.maxHei -2);
+  		        
+  		    for(var i = 0; i < this.h; i++){
+  		      for(var j = 0; j < this.w; j++){
+  		        $(cells).eq((p.y + i - 2)*Game.defaultSet.maxLen + p.x + j -2).css({'background': this.color})
+  		      }
+  		    }
+  		    switch(this.face){
+  		      case 0:
+  		        $(cells).eq((p.y-1)*Game.defaultSet.maxLen + p.x -3).css({'background': this.color});
+  		        break;
+  		      case 1:
+  		        $(cells).eq((p.y-3)*Game.defaultSet.maxLen + p.x -1).css({'background': this.color});
+  		        break;
+  		      case 2:
+  		        $(cells).eq((p.y-1)*Game.defaultSet.maxLen + p.x +1).css({'background': this.color});
+  		        break;
+  		      case 3:
+  		        $(cells).eq((p.y+1)*Game.defaultSet.maxLen + p.x -1).css({'background': this.color});
+  		        break;
+  		      default:
+  		        break;
+  		    }
+  		  }
+  		  tank.prototype.shoot = function(){
+  		    var opts = {};
+  		    opts.position = new position(this.position.x, this.position.y);
+  		    opts.speed = this.bulletSpeed;
+  		    opts.face = this.face;
+  		    opts.life = 1;
+  		    if(n > 0){
+  		      n--;
+  		    }else{
+  		      this.clean();
+  		    }
+  		    creatBullet(opts);
+  		  };
+  		  bullet.prototype.moveR = function(){
+  		    this.position.x += this.speed;
+  		    this.position.x >= Game.defaultSet.maxLen && (this.life = 0);
+  		  };
+  		  bullet.prototype.moveL = function(){
+  		    this.position.x -= this.speed;
+  		    this.position.x <= 0 && (this.life = 0);
+  		  };
+  		  bullet.prototype.moveT = function(){
+  		    this.position.y += this.speed;
+  		    this.position.y >= Game.defaultSet.maxHei && (this.life = 0);
+  		  };
+  		  bullet.prototype.moveB = function(){
+  		    this.position.y -= this.speed;
+  		    this.position.y <= 0 && (this.life = 0);
+  		  };
+  		  bullet.prototype.clean = function(){
+  		    this.life = 0;
+  		  };
+  		  bullet.prototype.render = function(){
+  		    this.life > 0 && this.renderingPosition();
+  		  };
+  		  bullet.prototype.renderingPosition = function(){
+  		    var cells = getCells();
+  		    $(cells).eq((this.position.y - 1)* Game.defaultSet.maxLen + this.position.x - 1).css({'background': this.color})
+  		  };
+        
+		    start();
+		  };
+		  
+		  $.fn.Game = function(opts){
+		    var $t = this;
+		    opts.layout || (opts.layout == $t)
+		    return new Game({'layout':$t});
+		  }
+		      
+		  $('.warp').Game({});
+		})($)
+		</script>
+	</body>
+</html>
