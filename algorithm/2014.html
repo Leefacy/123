@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>2014 Algorithm</title>
+	</head>
+	<body>
+		
+		<script type="text/javascript">
+		  //1.字符反转
+		  var strSource = 'abcdefghijklmnopqrstuvwxyz'
+		    , reString = function(_s){                                           //reverse the string.
+		      var s = '', l = _s.length-1;
+		      for(; l >= 0 ; l--){
+		        console.log(_s.charAt(l));
+		        s += _s.charAt(l);
+		      }
+		      return s;
+		    };
+		  //console.log(reString(strSource));
+		
+		  var aNumber = 123456789
+		    , reNumber = function(_n){
+		      return _n / 10 >= 1 ? (_n%10 + reNumber(Math.floor(_n/10)).toString()) : _n;
+		    };
+		  //console.log(reNumber(aNumber));
+		  
+		  var palindrome = '1a2b3c4c3b2a1'
+		    , isPalindrome = function(_s){
+		      return _s.length < 2 ? true : (_s.charAt(0) == _s.charAt(_s.length - 1) && isPalindrome(_s.substring(1, _s.length - 1)))
+		    };
+		  //console.log(isPalindrome(palindrome));
+		  
+		  var randomN = function(_n){
+		    var l = 0
+		      , r = 0;
+		    for(; _n > 0; _n--){
+		      Math.random() >= 0.8 ? r++ : l++;
+		    }
+		    return { l : l , r : r};
+		  };
+		  //console.log(randomN(10000));
+		  
+		  for(var i = 0; i < 1000; i++){
+		    var a = Math.random()
+		      , index = 0;
+		    //console.log(index + ':' + a);
+		    index ++;
+		    if(a == 1){
+		      break;
+		    }
+		  }
+		  
+		  var colsures = function(){
+		    var _n = 1
+		      , _f1 = function(){
+		        _n++;
+		      }
+		      , _f2 = function(){
+		        _n ++;
+		        return _n;
+		      };
+		    return _f2();
+		  };
+		
+		  
+		  
+		  
+		  //extend....
+		  var Animal = function(){
+		    this.species = 'Animal';
+		  };
+		  Animal.prototype.breath = function(){
+		    console.log('Animal is breathing.');
+		  };
+		  
+		  var cat = function(_name, _color){
+		    this._name = _name;
+		    this._color = _color;
+		  };
+		  var f = Animal.prototype;
+		  cat.prototype = f;
+		  cat.prototype.shout = function(){
+		    console.log(this._name+ ' is shouting!');
+		  };
+		  
+		  var a = new cat('Jim', 'red');
+		  //a.breath();
+		  //a.shout();
+		  
+		  
+		  
+		  
+		  
+		  
+		  var Tank = function(){
+        this._name = 'Tank';
+      };
+      Tank.op = {
+        x : 1
+        , y : 1
+      }
+      Tank.prototype = {
+        run : function(){
+          console.log(this._name +' is running.');
+        }
+        , shoot : function(){
+          console.log(this._name+' is shooting.');
+        }
+      };
+      
+      var NpcTank = function(_type, _number){
+        this._type = _type;
+        this._number = _number;
+        this._name = 'NpcTank';
+      };
+      var temp = Tank.prototype;
+      NpcTank.prototype = temp;
+      NpcTank.prototype.boom = function(){
+        console.log(this._number+' ' + this._name+' is booming.');
+      };
+      
+      var n1 = new NpcTank('_n1', 1);
+      //n1.boom();
+      //n1.run();
+      var TeddyDShare = {
+        a : function(_n){
+          return _n;
+        }
+        , b : function(name_){
+          this.name_ = name_;
+        }
+      };
+      TeddyDShare.b.prototype.getName = function(){
+        return this.name_;
+      }
+      
+      var teddydshare_ = new TeddyDShare.b('Hello');
+      console.log(teddydshare_.getName());
+		</script>
+	</body>
+</html>

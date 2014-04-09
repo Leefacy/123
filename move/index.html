@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>2014.03.24</title>
+    <link rel="stylesheet" type="text/css" href="../../lib/css/bootstrap.css">
+	</head>
+	<body>
+	  <div class="warp" style="position:absolute; width:821px; height: 821px;border: 1px solid #D9EAF3; margin:20px 50px">
+	    <div id="ooo" style="padding: 10px; position: relative"><img id="mio" src='001.jpg' width = '100px' height='100px'/></div>
+	  </div>
+	  
+	  <script src="../../lib/js/jquery.js" type="text/javascript"></script>
+	  <script src="../../lib/js/backbone.js" type="text/javascript"></script>
+    <script src="move2.js" type="text/javascript"></script>
+    <script>
+      (function(window){
+        /*
+        $('#mio').animate({
+          left : '500px'
+          , top : '500px'
+          , opacity : 0.5
+        }, {
+          step: function( now, fx ) {
+            var data = fx.elem.id + " " + fx.prop + ": " + now;
+            $( "body" ).append( "<div>" + data + "</div>" );
+          }
+        });
+        */
+        
+        //You can not click me.
+        
+        var CONFIG = {
+            H : 800
+          , W : 800
+        }
+        , runaway = function(x, y, r, warp){
+          var offset = $(warp).offset()
+            , H = $(warp).height()
+            , W = $(warp).width();
+          //x + r < H + offset.top && x - r > offset.top
+          if(x < H + offset.top){
+            if(x < H + offset.top - r){   //part of it
+              if(x > offset.top + r){  //inside the area
+                
+              }else if(x > offset.top){ //part of it
+                
+              }else{   //outside the area
+                
+              }
+            } else {
+              
+            }
+          }
+        };
+        $('#ooo').mouseenter(function(event){
+          runaway(event.pageX, event.pageY, 300, $('.warp'));
+        });
+        
+        //$(window).click(function(event){
+        //  console.log(event.pageX + ' : ' + event.pageY);
+        //})
+      })(window)
+    </script>
+	</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>2014.03.13</title>
+
+	</head>
+	<body>
+    <script src="baseteddy.js" type="text/javascript"></script>
+    <script>
+      var a = function(){
+        this.info = {
+          'a' : 'a'
+          , 'b' : 'b'
+          , 'c' : 'c'
+        }
+      }
+      , b = function(){
+        this.info = {
+          'b' : 'b'
+          , 'c' : 'c'
+          , 'd' : 'd'
+        }
+      }
+      , c = function(o){
+        console.log(new o());
+      };
+      
+      var temp = BT._NEW_(b);
+      console.log(temp);
+      console.log(BT._TOSTRING_.call(temp, 'B'));
+      console.log(BT._NEW_(a));
+    </script>
+	</body>
+</html>

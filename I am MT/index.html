@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>I AM MT.</title>
+		<link rel="stylesheet" type="text/css" href="../../lib/css/bootstrap.css">
+	</head>
+	<body>
+		<div class="container">
+      <table class="table table-hover">
+        <tr>
+          <th>#</th>
+          <th>Times</th>
+          <th>--</th>
+          <th>Opration</th>
+        </tr>
+        <tr>
+          <td>
+            <div class="J_DIV J_I">1</div>
+          </td>
+          <td>
+            <div class="J_DIV J_T">
+              <input type="text"/>
+            </div>
+          </td>
+          <td>
+            <div class="J_DIV J_D">
+              <input type="text"/>
+            </div>
+          </td>
+          <td>
+            <input type="button" class="J_O J_O_S" value="SAVE"/>
+            <input type="button" class="J_O J_O_E" value="EDIT"/>
+          </td>
+        </tr>
+      </table>
+		</div>
+		<script data-main="scripts/main" src="../../lib/js/jquery.js"></script>
+		<script type='text/javascript'>
+      (function($, func){
+        $.fn.Func = function(){
+          return new func({$t: this});
+        };
+        $('.container').Func();
+      })(jQuery, function(opts){
+        var TABLE = function(){
+          this.obj = opts.$t;
+          this.work();
+        };
+        TABLE.prototype = {
+          work : function(){
+            
+          }
+          , init : function(){
+            
+          }
+        }
+        
+        return TABLE;
+      });
+		</script>
+	</body>
+</html>
