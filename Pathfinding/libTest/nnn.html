@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Finding Way</title>
+	</head>
+	<body>
+		<div class="warp">
+
+		</div>
+    <div class="log"></div>
+
+		<script type="text/javascript">
+		  var a = [];
+		  a.push({x:1, y:1});
+		  a.push({x:4, y:4});
+		  a.push({x:3, y:3});
+		  a.push({x:2, y:2});
+		  a.sort(function(x, y){
+		    return x.x - y.x
+		  })
+		  console.log(a);
+		  var b = {x:1}
+		  if(b){
+		    console.log('yep!')
+		  }else{
+		    console.log('nop!')
+		  }
+		</script>
+	</body>
+</html>
